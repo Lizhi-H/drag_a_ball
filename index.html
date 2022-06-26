@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+		*{
+			margin:0;
+			padding: 0;
+		}
+		#main{
+			width:200px;
+			height:200px;
+			background: #ffd1b3;
+			position: absolute;
+			top:100px;
+			left:100px;
+			-webkit-user-select: none;
+            line-height: 200px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50%;
+            text-align: center;
+            color: black;
+		}
+        #main:hover{
+            background: #ffb380;
+        }
+        body{
+            width: 100vw;
+            height: 100vh;
+        }
+	</style>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+	<div id="main">
+		I can be moved!
+	</div>
+    <script type="text/javascript">
+    let isMouseDown=false;
+    let lastPosition={};
+    const main=$('#main');
+    const body=$('body');
+    //get the current position on the event of mousedown
+    //then when mouse moves, calculate the changed css left and top value. 
+    main.on ('mousedown', function(e){
+        isMouseDown=true;
+        lastPosition.x=e.pageX;
+        lastPosition.y=e.pageY;
+    }).on('mousemove', function(e){
+        if(isMouseDown){
+            let targetX=parseInt(main.css('left'))+e.pageX-lastPosition.x;
+            let targetY=parseInt(main.css('top'))+e.pageY-lastPosition.y;
+            main.css('left', targetX+'px');
+            main.css('top', targetY+'px');
+            //the box should not go beyond user's view.
+            if (targetX<=0) {
+                main.css('left', '0px');
+            }else if (targetY<=0){
+                main.css('top', '0px');
+            }else if (parseInt(body.css('width'))-targetX<=200) {
+                main.css('left',parseInt(body.css('width'))-200+'px');
+            }else if (parseInt(body.css('height'))-targetY<=200){
+                main.css('top',parseInt(body.css('height'))-200+'px');
+            }
+            //get the current position again
+            lastPosition.x=e.pageX;
+            lastPosition.y=e.pageY;
+        }
+    }).on('mouseup',function(){
+        isMouseDown=false;
+    })
+    </script>
+</body>
+</html>
